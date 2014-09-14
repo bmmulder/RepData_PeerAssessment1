@@ -1,5 +1,12 @@
 ## Reproducible Research: Peer Assessment 1
 
+Loading libraries
+
+
+```r
+library(ggplot2)
+library(Hmisc)
+```
 
 * * *
 ### Loading and preprocessing the data
@@ -100,15 +107,11 @@ tot.steps <- tapply(activity$steps, activity$date, sum, na.rm = TRUE)
 
 
 ```r
-library(ggplot2)
-qplot(tot.steps, xlab = "Total steps excluding NA's", ylab = "Frequency")
+qplot(tot.steps, xlab = "Total steps excluding NA's", ylab = "Frequency", binwidth=1000) + 
+      geom_bar(fill="#FFBBFF", colour="black", binwidth=1000)
 ```
 
-```
-## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
-```
-
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
 
 2a. The mean for the total steps per day:
 
@@ -150,11 +153,11 @@ daily.pattern <- data.frame(time = as.POSIXct(names(steps.mean)), steps.mean = s
 
 ```r
 library(scales)
-ggplot(daily.pattern, aes(time, steps.mean)) + geom_line() + xlab("Time of day") + 
+ggplot(daily.pattern, aes(time, steps.mean)) + geom_line(colour="blue") + xlab("Time of day") + 
     ylab("Steps mean excluding NA's") + scale_x_datetime(labels = date_format(format = "%H:%M"))
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13.png) 
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14.png) 
 
 
 2. Which five minute interval has the highest mean number of steps?
@@ -187,24 +190,6 @@ summary(activity$steps)
 
 Use the steps mean for a five-minute interval to fill in NA's for that particular interval in the dataset.
 
-
-```r
-library(Hmisc)
-```
-
-```
-## Loading required package: grid
-## Loading required package: lattice
-## Loading required package: survival
-## Loading required package: splines
-## Loading required package: Formula
-## 
-## Attaching package: 'Hmisc'
-## 
-## The following objects are masked from 'package:base':
-## 
-##     format.pval, round.POSIXt, trunc.POSIXt, units
-```
 
 ```r
 activity.na.filled <- activity
@@ -259,14 +244,11 @@ A histogram of the imputed dataset.
 
 
 ```r
-qplot(total.steps.na.filled, xlab = "Total steps", ylab = "Frequency")
+qplot(total.steps.na.filled, xlab = "Total steps imputed data", ylab = "Frequency", binwidth=1000) + 
+      geom_bar(fill="#FFBBFF", colour="black", binwidth=1000)
 ```
 
-```
-## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
-```
-
-![plot of chunk unnamed-chunk-21](figure/unnamed-chunk-21.png) 
+![plot of chunk unnamed-chunk-22](figure/unnamed-chunk-22.png) 
 
 Imputing the missing data has increased the average number of steps.
 
@@ -316,4 +298,4 @@ ggplot(weekday.pattern, aes(time, steps.mean)) + geom_line(colour="blue") + xlab
     facet_grid(. ~ weekday) + geom_line(stat = "hline", yintercept = "mean", colour="darkred")
 ```
 
-![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24.png) 
+![plot of chunk unnamed-chunk-25](figure/unnamed-chunk-25.png) 
