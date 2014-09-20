@@ -5,9 +5,13 @@ Loading libraries
 ```{r}
 library(ggplot2)
 library(Hmisc)
+library(knitr)
 ```
 
 * * *
+
+Assuming the zipfile is in the same folder as the R file.
+
 ### Loading and preprocessing the data
 ```{r}
 unzip("activity.zip")
@@ -134,24 +138,21 @@ Let's compare the mean and median steps for each day between the original data s
 
 ```{r}
 total.steps.na.filled <- tapply(activity.na.filled$steps, activity.na.filled$date, sum)
-mean(tot.steps)
 ```
 
+Using the kable command we can produce a nice summary table for each dataset and compare how the fill of the NA's in the original dataset influenced the outcomes for statistics like mean and median.
 
-```{r}
-mean(total.steps.na.filled)
+```{r total.steps.compared, results="asis"}
+tot.steps.compared <- data.frame(tot.steps)
+names(tot.steps.compared) <- c("original")
+tot.steps.compared$filled <- total.steps.na.filled
+tot.steps.stats <- kable(summary(data.frame(tot.steps.compared)), digits=2)
+
 ```
 
+As expected it makes a difference if we use a filled average for NA's. Both in the mean as well as the median are higher when we use a calculated average for the NA values in the original data.
 
-```{r}
-median(tot.steps)
-```
-
-
-```{r}
-median(total.steps.na.filled)
-```
-
+* * *
 
 A histogram of the imputed dataset.
 
@@ -204,3 +205,8 @@ ggplot(weekday.pattern, aes(time, steps.mean)) + geom_line(colour="blue") + xlab
     ylab("Mean number of steps") + scale_x_datetime(labels = date_format(format = "%H:%M")) + 
     facet_grid(. ~ weekday) + geom_line(stat = "hline", yintercept = "mean", colour="darkred")
 ```
+
+
+
+
+
